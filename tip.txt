@@ -1,0 +1,47 @@
+  late List<Product> products;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    var url = Uri.https("fakestoreapi.com", "products/1");
+    var response = await http.get(url);
+
+    // Decode JSON string to a Dart map
+    final Map<String, dynamic> jsonMap = jsonDecode(response.body);
+
+    // // Access data from the map
+    // print('Product ID: ${jsonMap['id']}');
+    // print('Title: ${jsonMap['title']}');
+    // print('Price: \$${jsonMap['price']}');
+    // print('Description: ${jsonMap['description']}');
+    // print('Category: ${jsonMap['category']}');
+    // print('Image URL: ${jsonMap['image']}');
+    // print('Rating Rate: ${jsonMap['rating']['rate']}');
+    // print('Rating Count: ${jsonMap['rating']['count']}');
+
+
+    // print("${response.body}");
+    setState(() {
+      products = [
+        Product(id: jsonMap['id'],
+      title: jsonMap['title'],
+      price: jsonMap['price'],
+      description: jsonMap['description'],
+      category: jsonMap['category'],
+      image: jsonMap['image'],
+      rating: Rating(
+      rate: 3.9,
+      count: jsonMap['rating']['count'] ))
+      ];
+    }
+    );
+  }
+
+
+
+# Problem
+    ปัญหานี้เกิดจากการที่ products ยังไม่ได้ถูกกำหนดค่าเริ่มต้น (initialized) ก่อนที่จะถูกใช้งานใน ListView.builder เมื่อแอปพลิเคชันเริ่มทำงาน ค่าของ products ยังเป็น null และจะทำให้เกิดข้อผิดพลาดเมื่อพยายามใช้มันใน ListView.builder
